@@ -15,8 +15,17 @@ var builtinModules = require('builtin-modules');
 var uniq = require('lodash.uniq');
 var flatten = require('lodash.flatten');
 
+var modulesToIgnore = require('./_IGNORE_THESE');
+
 var topPkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-var modules = fs.readdirSync('./packages/node_modules');
+var allModules = fs.readdirSync('./packages/node_modules');
+
+var modules = [];
+for (let module of allModules) {
+  if (modulesToIgnore.indexOf(module) === -1) {
+    modules.push(module);
+  }
+}
 
 modules.forEach(function (mod) {
   var pkgDir = path.join('./packages/node_modules', mod);

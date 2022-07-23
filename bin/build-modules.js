@@ -7,29 +7,17 @@ var denodeify = require('denodeify');
 var fs = require('fs');
 var readDir = denodeify(fs.readdir);
 var stat = denodeify(fs.stat);
+var modulesToIgnore = require('./_IGNORE_THESE');
 
 var buildModule = require('./build-module');
 var buildPouchDB = require('./build-pouchdb');
-
-var modulesToSkipBuilding = [
-  'onsite-pouchdb-adapter-leveldb',
-  'onsite-pouchdb-adapter-leveldb-core',
-  'onsite-pouchdb-adapter-node-sql',
-  'onsite-pouchdb-adapter-node-sql-core',
-  'onsite-pouchdb-adapter-node-websql',
-  'onsite-pouchdb-adapter-websql',
-  'onsite-pouchdb-adapter-websql-core',
-  'onsite-pouchdb-auth-utils',
-  'onsite-pouchdb-memory',
-  'onsite-pouchdb-upsert-plugin',
-];
 
 function buildPackage(pkg) {
   return stat(path.resolve('packages/node_modules', pkg)).then(function (stat) {
     if (!stat.isDirectory()) { // skip e.g. 'npm-debug.log'
       return;
     }
-    if (modulesToSkipBuilding.indexOf(pkg) > -1) {
+    if (modulesToIgnore.indexOf(pkg) > -1) {
       console.log('Skipping ' + pkg + '...');
       return;
     }
