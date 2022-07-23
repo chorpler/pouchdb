@@ -20,6 +20,7 @@
     "test": "bash bin/run-test.sh",
     "prepublish": "npm run build",
     "release": "sh bin/release.sh",
+    "package": "DRY_RUN=1 npm run release",
     "install-jekyll": "sh bin/install-jekyll.sh",
     "publish-site": "sh bin/publish-site.sh",
     "build-site": "node ./bin/build-site.js",
