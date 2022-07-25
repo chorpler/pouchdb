@@ -127,6 +127,7 @@ function buildForBrowser() {
 
 function buildPluginsForBrowserify() {
   return all(plugins.map(function (plugin) {
+    console.log("\n\nBuilding plugin for browserify: '" + plugin + "' …");
     return doRollup('src/plugins/' + plugin + '.js', true, {
       cjs: 'lib/plugins/' + plugin + '.js'
     });
@@ -135,6 +136,7 @@ function buildPluginsForBrowserify() {
 
 function buildPluginsForBrowser() {
   return all(plugins.map(function (plugin) {
+    console.log("\n\nBuilding plugin for browser: '" + plugin + "' …");
     var source = 'lib/plugins/' + plugin + '.js';
     return doBrowserify('pouchdb', source, {}, 'pouchdb').then(function (code) {
       code = comments[plugin] + code;
