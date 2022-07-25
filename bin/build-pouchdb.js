@@ -28,7 +28,7 @@ var builtInModules = require('builtin-modules');
 var external = Object.keys(require('../package.json').dependencies)
   .concat(builtInModules);
 
-var plugins = ['indexeddb', 'localstorage', 'memory', 'find'];
+var plugins = ['idb', 'indexeddb', 'localstorage', 'memory', 'find', 'websql'];
 
 var currentYear = new Date().getFullYear();
 
