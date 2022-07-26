@@ -1,4 +1,4 @@
-// PouchDB 7.0.0-prerelease
+// PouchDB 7.4.0
 // 
 // (c) 2012-2022 Dale Harvey and the PouchDB team
 // PouchDB may be freely distributed under the Apache license, version 2.0.
@@ -5761,7 +5761,7 @@ PouchDB.fetch = function (url, opts) {
 PouchDB.prototype.activeTasks = PouchDB.activeTasks = new ActiveTasks();
 
 // managed automatically by set-version.js
-var version = "7.0.0-prerelease";
+var version = "7.4.0";
 
 // this would just be "return doc[field]", but fields
 // can be "deep" due to dot notation

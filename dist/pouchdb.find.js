@@ -1,4 +1,4 @@
-// pouchdb-find plugin 7.0.0-prerelease
+// pouchdb-find plugin 7.4.0
 // Based on Mango: https://github.com/cloudant/mango
 // 
 // (c) 2012-2022 Dale Harvey and the PouchDB team

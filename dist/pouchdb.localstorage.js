@@ -1,4 +1,4 @@
-// PouchDB localStorage plugin 7.0.0-prerelease
+// PouchDB localStorage plugin 7.4.0
 // Based on localstorage-down: https://github.com/No9/localstorage-down
 // 
 // (c) 2012-2022 Dale Harvey and the PouchDB team
