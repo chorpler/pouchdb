@@ -28,7 +28,7 @@ var builtInModules = require('builtin-modules');
 var external = Object.keys(require('../package.json').dependencies)
   .concat(builtInModules);
 
-var plugins = ['indexeddb', 'localstorage', 'memory', 'find'];
+var plugins = ['idb', 'indexeddb', 'localstorage', 'memory', 'find', 'websql'];
 
 var currentYear = new Date().getFullYear();
 
@@ -127,6 +127,7 @@ function buildForBrowser() {
 
 function buildPluginsForBrowserify() {
   return all(plugins.map(function (plugin) {
+    console.log("\n\nBuilding plugin for browserify: '" + plugin + "' …");
     return doRollup('src/plugins/' + plugin + '.js', true, {
       cjs: 'lib/plugins/' + plugin + '.js'
     });
@@ -135,6 +136,7 @@ function buildPluginsForBrowserify() {
 
 function buildPluginsForBrowser() {
   return all(plugins.map(function (plugin) {
+    console.log("\n\nBuilding plugin for browser: '" + plugin + "' …");
     var source = 'lib/plugins/' + plugin + '.js';
     return doBrowserify('pouchdb', source, {}, 'pouchdb').then(function (code) {
       code = comments[plugin] + code;

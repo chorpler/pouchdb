@@ -1,4 +1,4 @@
-{
+module.exports = {
 
   "extends": "eslint:recommended",
 
@@ -38,9 +38,9 @@
     "semi": ["error", "always"],
     "curly": ["error", "all"],
     "space-unary-ops": ["error", {"words": true}],
-    "space-before-function-paren": ["error", {"anonymous": "always", "named": "never"}],
-    "max-len": ["error", 100, {"ignoreComments": true, "ignoreStrings": true, "ignoreRegExpLiterals": true}],
+    "space-before-function-paren": ["error", {"anonymous": "ignore", "named": "ignore"}],
+    "max-len": ["warn", 200, {"ignoreComments": true, "ignoreStrings": true, "ignoreRegExpLiterals": true}],
     "keyword-spacing": ["error"],
     "space-before-blocks": ["error"]
   }
-}
+};
