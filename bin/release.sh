@@ -26,7 +26,8 @@ git checkout -b $BUILD_DIR
 node bin/update-package-json-for-publish.js
 
 # Publish all modules with Lerna
-for pkg in $(ls packages/node_modules); do
+# for pkg in $(ls packages/node_modules); do
+for pkg in packages/node_modules/{pouchdb,sublevel}*; do
   if [ ! -d "packages/node_modules/$pkg" ]; then
     continue
   elif [ "true" = $(node --eval "console.log(require('./packages/node_modules/$pkg/package.json').private);") ]; then
