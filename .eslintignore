@@ -4,3 +4,4 @@ tests/performance-bundle.js
 tests/fuzzy/seedrandom.min.js
 tests/integration/utils-bundle.js
 !packages/node_modules/*
+pouchdb-webpack.js
