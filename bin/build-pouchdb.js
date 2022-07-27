@@ -13,6 +13,7 @@ var rollup = require('rollup');
 var rollupPlugins = require('./rollupPlugins');
 var rimraf = denodeify(require('rimraf'));
 var mkdirp = denodeify(require('mkdirp'));
+// var mkdirp = require('mkdirp');
 var all = Promise.all.bind(Promise);
 var argsarray = require('argsarray');
 var buildUtils = require('./build-utils');
@@ -20,6 +21,7 @@ var addPath = buildUtils.addPath;
 var doUglify = buildUtils.doUglify;
 var doBrowserify = buildUtils.doBrowserify;
 var writeFile = buildUtils.writeFile;
+var fs = require('graceful-fs');
 
 var pkg = require('../packages/node_modules/pouchdb/package.json');
 var version = pkg.version;
@@ -29,7 +31,7 @@ var external = Object.keys(require('../package.json').dependencies)
   .concat(builtInModules);
 
 // var plugins = ['idb', 'indexeddb', 'localstorage', 'memory', 'find', 'websql'];
-var plugins = ['idb', 'indexeddb', 'localstorage', 'memory', 'find'];
+var plugins = ['idb', 'indexeddb', 'localstorage', 'memory', 'find', 'json'];
 
 var currentYear = new Date().getFullYear();
 
@@ -152,11 +154,16 @@ function buildPluginsForBrowser() {
 }
 
 var rimrafMkdirp = argsarray(function (args) {
+  var fullOtherPath = "";
   return all(args.map(function (otherPath) {
-    return rimraf(addPath('pouchdb', otherPath));
+    fullOtherPath = addPath('pouchdb', otherPath);
+    console.log("Removing directory: '" + fullOtherPath + "'");
+    return rimraf(fullOtherPath);
   })).then(function () {
     return all(args.map(function (otherPath) {
-      return mkdirp(addPath('pouchdb', otherPath));
+      fullOtherPath = addPath('pouchdb', otherPath);
+      console.log("Creating directory: '" + fullOtherPath + "'");
+      return mkdirp(fullOtherPath, {mkdir: fs.mkdir, stat: fs.stat});
     }));
   });
 });

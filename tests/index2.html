@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Untitled</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <!-- <link rel="preload" as="script" href="../pouchdb-webpack.js" crossorigin="anonymous"/> -->
+  <!-- <link rel="preload" as="script" href="../pouchdb-webpack.js" crossorigin="localhost"/> -->
+  <!-- <link rel="preload" as="script" href="../dist/pouchdb.js" crossorigin="localhost"/> -->
+
+  <!-- For testing: -->
+  <!-- <script type="systemjs-module" src="../dist/pouchdb.js"></script> -->
+  <script type="javascript" src="../dist/pouchdb.js"></script>
+  <!-- <script type="systemjs-module" src="../pouchdb-webpack.js"></script> -->
+
+  <script>
+    // System.import("pouchdb").then(m => console.log(m));
+    function windowReady() {
+      console.log("Done!");
+      try {
+        window['poudb'] = PouchDB;
+      } catch(err) {
+        console.log("ERror loading pocuhdb.");
+      }
+    };
+    window.addEventListener('load', windowReady);
+  </script>
+
+
+  <!-- Load an app.js file written in the "system" module format output (via RollupJS / Babel / TypeScript) -->
+  <!-- <script type="systemjs-module" src="app.js"></script> -->
+</body>
+</html>

@@ -11,14 +11,27 @@
 
 var rollup = require('rollup').rollup;
 var rollupPlugins = require('./rollupPlugins');
+var console = require('console');
+// import { chalk } from 'chalk';
+var chalk = require('chalk');
 
 var path = require('path');
 var denodeify = require('denodeify');
-var mkdirp = denodeify(require('mkdirp'));
+var mkdirPkg = require('mkdirp');
+// var mkdirp = denodeify(mkdirPkg);
+var mkdirp = mkdirPkg;
 var rimraf = denodeify(require('rimraf'));
 var builtInModules = require('builtin-modules');
-var fs = require('fs');
+// var fs = require('fs');
+var fs = require('graceful-fs');
 var all = Promise.all.bind(Promise);
+// var all = async function(promiseArray) {
+//   for (let prom of promiseArray) {
+//     console.log("");
+//     let res = await Promise.resolve(prom);
+
+//   }
+// }
 
 // special case - pouchdb-for-coverage is heavily optimized because it's
 // simpler to run the coverage reports that way.
@@ -26,7 +39,8 @@ var all = Promise.all.bind(Promise);
 // through aggressive bundling, ala pouchdb, because it's assumed that
 // for these packages bundle size is more important than modular deduping
 var AGGRESSIVELY_BUNDLED_PACKAGES =
-  ['pouchdb-for-coverage', 'pouchdb-node', 'pouchdb-browser'];
+  // ['pouchdb-for-coverage', 'pouchdb-node', 'pouchdb-browser'];
+  [];
 // packages that only have a browser version
 var BROWSER_ONLY_PACKAGES =
   ['pouchdb-browser'];
@@ -64,38 +78,49 @@ function buildModule(filepath) {
   // and it's built in "browser mode"
   var forceBrowser = BROWSER_ONLY_PACKAGES.indexOf(pkg.name) !== -1;
 
+  var libDirectory = path.resolve(filepath, 'lib');
   return Promise.resolve().then(function () {
-    return rimraf(path.resolve(filepath, 'lib'));
+    console.log("Removing directory: '" + libDirectory + "'");
+    return rimraf(libDirectory);
   }).then(function () {
-    return mkdirp(path.resolve(filepath, 'lib'));
+    console.log("Creating directory: '" + libDirectory + "'");
+    return mkdirp(libDirectory, {mode: 0o755, fs: fs});
   }).then(function () {
     return all(versions.map(function (isBrowser) {
-      return rollup({
-        input: path.resolve(filepath, './src/index.js'),
+      var pathToRollUp = path.resolve(filepath, './src/index.js');
+      var rollupConfig = {
+        input: pathToRollUp,
         external: depsToSkip,
         plugins: rollupPlugins({
           jsnext: true,
           browser: isBrowser || forceBrowser
-        })
-      }).then(function (bundle) {
+        }),
+        output: { exports: "default"},
+      };
+      console.log("\n\n\n\n\nROLLING UP: '" + pathToRollUp + "'\nwith config:\n" + JSON.stringify(rollupConfig) + "\n");
+      return rollup(rollupConfig).then(function (bundle) {
         var formats = ['cjs', 'es'];
         return all(formats.map(function (format) {
           var file = (isBrowser ? 'lib/index-browser' : 'lib/index') +
             (format === 'es' ? '.es.js' : '.js');
-          return bundle.write({
+          var rollupOutputPath = path.resolve(filepath, file);
+          var rollupOutputConfig = {
             format: format,
-            file: path.resolve(filepath, file)
-          }).then(function () {
+            file: rollupOutputPath,
+            exports: "named",
+          };
+          console.log("\n\nROLLUP OUTPUT FOR '" + pathToRollUp + "' IS:\n" + JSON.stringify(rollupOutputConfig) + "\n");
+          return bundle.write(rollupOutputConfig).then(function () {
             console.log('  \u2713' + ' wrote ' +
               path.basename(filepath) + '/' + file + ' in ' +
                 (isBrowser ? 'browser' :
                 versions.length > 1 ? 'node' : 'vanilla') +
               ' mode');
-          });
+          }).catch(function(err1) { console.log(chalk.bgRed("\n\n\n\n\n\n\n\n\n\nCAUGHT ERROR1 FOR PATH: '" + pathToRollUp + "'")); console.error(err1);});
         }));
-      });
+      }).catch(function(err2) { console.log(chalk.bgRed("\n\n\n\n\n\n\n\n\n\nCAUGHT ERROR2 FOR PATH: '" + pathToRollUp + "'")); console.error(err2);});
     }));
-  });
+  }).catch(function(err3) { console.log(chalk.bgRed("\n\n\n\n\n\n\n\n\n\nCAUGHT ERROR3 FOR PATH: '" + filepath + "'")); console.error(err3); });
 }
 if (require.main === module) {
   buildModule(process.argv[process.argv.length - 1]).catch(function (err) {

@@ -11,7 +11,7 @@ var fs = require('fs');
 var writeFileAsync = denodeify(fs.writeFile);
 var renameAsync = denodeify(fs.rename);
 var streamToPromise = require('stream-to-promise');
-
+var babelify = require("babelify");
 var terser = require("terser");
 
 function addPath(pkgName, otherPath) {
@@ -38,6 +38,7 @@ var browserifyCache = {};
 function doBrowserify(pkgName, filepath, opts, exclude) {
 
   var bundler = browserifyCache[filepath];
+  console.log("BROWSERIFYING: '" + pkgName + "'");
 
   if (!bundler) {
     if (DEV_MODE) {
@@ -49,7 +50,8 @@ function doBrowserify(pkgName, filepath, opts, exclude) {
         });
     } else {
       bundler = browserify(addPath(pkgName, filepath), opts)
-        .transform('es3ify')
+      .transform(babelify.configure({presets: ["@babel/preset-env"]}))
+      .transform('es3ify')
         .plugin('bundle-collapser/plugin');
     }
 
