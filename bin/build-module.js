@@ -14,10 +14,11 @@ var rollupPlugins = require('./rollupPlugins');
 
 var path = require('path');
 var denodeify = require('denodeify');
-var mkdirp = denodeify(require('mkdirp'));
+// var mkdirp = denodeify(require('mkdirp'));
+var mkdirp = require('mkdirp');
 var rimraf = denodeify(require('rimraf'));
 var builtInModules = require('builtin-modules');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var all = Promise.all.bind(Promise);
 
 // special case - pouchdb-for-coverage is heavily optimized because it's

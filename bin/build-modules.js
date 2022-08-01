@@ -4,7 +4,7 @@
 
 var path = require('path');
 var denodeify = require('denodeify');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var readDir = denodeify(fs.readdir);
 var stat = denodeify(fs.stat);
 var modulesToIgnore = require('./_IGNORE_THESE');
