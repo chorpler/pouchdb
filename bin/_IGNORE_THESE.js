@@ -9,7 +9,7 @@ var modulesToSkipBuilding = [
   'onsite-pouchdb-auth-utils',
   'onsite-pouchdb-memory',
   'onsite-pouchdb-upsert-plugin',
-  'pouchdb-for-coverage',
+  // 'pouchdb-for-coverage',
 ];
 
 module.exports = modulesToSkipBuilding;
