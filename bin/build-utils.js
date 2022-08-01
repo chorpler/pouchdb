@@ -7,12 +7,33 @@ var denodeify = require('denodeify');
 var browserify = require('browserify');
 var browserifyIncremental = require('browserify-incremental');
 var derequire = require('derequire');
-var fs = require('graceful-fs');
-var writeFileAsync = denodeify(fs.writeFile);
+var fs = require('graceful-fs').promises;
+// var writeFileAsync = denodeify(fs.writeFile);
+var writeFile = fs.writeFile;
 var renameAsync = denodeify(fs.rename);
 var streamToPromise = require('stream-to-promise');
 
 var terser = require("terser");
+
+// function writeFile(
+//   file: PathLike | FileHandle,
+//   data: string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView> | Stream,
+//   options?:
+//       | (ObjectEncodingOptions & {
+//             mode?: Mode | undefined;
+//             flag?: OpenMode | undefined;
+//         } & Abortable)
+//       | BufferEncoding
+//       | null
+// ): Promise<void>;
+var writeFileAsync = function (file, data, options) {
+  console.log("writeFileAsync: Writing file '" + file + "' with options and data:\n", JSON.stringify(options), "\n", JSON.stringify(data));
+  if(data == null) {
+    console.log("WHOA! ERROR, NO DATA PROVIDED!");
+    data = "";
+  }
+  return writeFile(file, data, options);
+}
 
 function addPath(pkgName, otherPath) {
   return path.resolve('packages/node_modules/' + pkgName, otherPath);
@@ -20,6 +41,7 @@ function addPath(pkgName, otherPath) {
 
 function writeFile(filename, contents) {
   var tmp = filename + '.tmp';
+  console.log("build-utils.writeFile(): Writing '" + filename + ".tmp' ...");
   return writeFileAsync(tmp, contents, 'utf-8').then(function () {
     return renameAsync(tmp, filename);
   }).then(function () {
@@ -70,4 +92,4 @@ function doBrowserify(pkgName, filepath, opts, exclude) {
 exports.addPath = addPath;
 exports.doBrowserify = doBrowserify;
 exports.doUglify = doUglify;
-exports.writeFile = writeFile;
+exports.writeFile = writeFileAsync;

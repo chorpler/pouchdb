@@ -71,13 +71,24 @@ function buildModule(filepath) {
     return mkdirp(path.resolve(filepath, 'lib'));
   }).then(function () {
     return all(versions.map(function (isBrowser) {
+      var fieldsToScan = ['module', 'jsnext', 'jsnext:main', 'main'];
+      if(isBrowser || forceBrowser) {
+        fieldsToScan.push('browser');
+      }
+      var rollupNodeResolveConfig = {
+        // module: true,
+        // jsnext: true,
+        mainFields: fieldsToScan,
+        // preferBuiltin: false,
+        // browser: isBrowser || forceBrowser
+      };
+      console.log("BuildModule(): Building for module: " + filepath);
+      console.log("BuildModule(): skipping dependencies: " + JSON.stringify(depsToSkip));
+      console.log("BuildModule(): node resolve config is: " + JSON.stringify(rollupNodeResolveConfig));
       return rollup({
         input: path.resolve(filepath, './src/index.js'),
         external: depsToSkip,
-        plugins: rollupPlugins({
-          jsnext: true,
-          browser: isBrowser || forceBrowser
-        })
+        plugins: rollupPlugins(rollupNodeResolveConfig),
       }).then(function (bundle) {
         var formats = ['cjs', 'es'];
         return all(formats.map(function (format) {

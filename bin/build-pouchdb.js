@@ -92,7 +92,9 @@ function doRollup(input, browser, formatsToFiles) {
           console.log('    took ' + ms + ' ms to rollup ' +
                       path.dirname(input) + '/' + path.basename(input));
         }
-        return writeFile(addPath('pouchdb', fileOut), bundle.code);
+        var fileOutPath = addPath('pouchdb', fileOut);
+        console.log("build-pouchdb: Now writing to file: " + fileOutPath);
+        return writeFile(fileOutPath, bundle.code);
       });
     }));
   });
