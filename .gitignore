@@ -15,6 +15,10 @@ tests/integration/cordova/www
 tests/pouchdb_server
 tests/performance-bundle.js
 packages/node_modules/pouchdb/dist/*
+packages/node_modules/pouchdb*/node_modules
+packages/node_modules/sublevel*/node_modules
+packages/node_modules/pouchdb*/org.json
+packages/node_modules/sublevel*/org.json
 packages/node_modules/onsite-pouchdb-adapter-leveldb/node_modules
 packages/node_modules/onsite-pouchdb-adapter-leveldb-core/node_modules
 packages/node_modules/onsite-pouchdb-adapter-node-sql/node_modules
