@@ -26,7 +26,7 @@ git checkout -b $BUILD_DIR
 node bin/update-package-json-for-publish.js
 
 # Publish all modules with Lerna
-for pkg in $(ls packages/node_modules); do
+for pkg in packages/node_modules/*; do
   if [ ! -d "packages/node_modules/$pkg" ]; then
     continue
   elif [ "true" = $(node --eval "console.log(require('./packages/node_modules/$pkg/package.json').private);") ]; then
@@ -34,9 +34,9 @@ for pkg in $(ls packages/node_modules); do
   fi
   cd packages/node_modules/$pkg
   echo "Publishing $pkg..."
-  if [ ! -z $DRY_RUN ]; then
+  if [ -n "${DRY_RUN}" ]; then
     echo "Dry run, not publishing"
-  elif [ ! -z $BETA ]; then
+  elif [ -n "${BETA}" ]; then
     npm publish --tag beta
   else
     npm publish
